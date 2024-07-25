@@ -8,17 +8,31 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    //Subscribe every changes in network manager
+    @ObservedObject var networkmanager = NetworkManager()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView{
+            List(networkmanager.posts, rowContent: { post in
+                NavigationLink {
+                    DetailView(url: post.url)
+                } label: {
+                    HStack{
+                        Text(String(post.points))
+                        Text(post.title)
+                    }
+                }
+            })
+            .navigationTitle("Your Update News")
         }
-        .padding()
+        .onAppear(perform: {
+            self.networkmanager.fetchData()
+        })
     }
 }
 
 #Preview {
     ContentView()
 }
+
